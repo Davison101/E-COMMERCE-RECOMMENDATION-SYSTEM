@@ -2,13 +2,18 @@
 
 # Data Configuration
 data:
-  raw_data_path: "data/raw/ml-100k/u.data"
+  raw_data_path: "data/raw/amazon_reviews/ratings.csv"
   processed_data_path: "data/processed"
-  dataset_name: "movielens-100k"
+  dataset_name: "amazon-reviews"
   expected_columns: ["user_id", "item_id", "rating", "timestamp"]
+  column_mapping:
+    reviewerID: "user_id"
+    asin: "item_id"
+    overall: "rating"
+    unixReviewTime: "timestamp"
   rating_scale: [1, 5]
-  separator: "\t"
-  header: null
+  separator: ","
+  header: 0
 
 # Preprocessing Configuration
 preprocessing:

@@ -28,6 +28,7 @@ class DataLoader:
         self.raw_data_path = self.config.get('raw_data_path', 'data/raw/ml-100k/u.data')
         self.expected_columns = self.config.get('expected_columns', 
             ['user_id', 'item_id', 'rating', 'timestamp'])
+        self.column_mapping = self.config.get('column_mapping', {})
         self.rating_scale = self.config.get('rating_scale', [1, 5])
         self.separator = self.config.get('separator', '\t')
         self.header = self.config.get('header', None)
@@ -77,9 +78,16 @@ class DataLoader:
             logger.error(f"Failed to load data from {path}: {e}")
             raise ValueError(f"Could not parse data file: {e}")
         
+        # Apply column mapping if configured (e.g., reviewerID → user_id)
+        if self.column_mapping:
+            rename_map = {k: v for k, v in self.column_mapping.items() if k in df.columns}
+            if rename_map:
+                df = df.rename(columns=rename_map)
+                logger.info(f"Renamed columns: {rename_map}")
+
         logger.info(f"Loaded {len(df)} rows, {len(df.columns)} columns")
         return df
-    
+
     def validate_schema(self, df: pd.DataFrame) -> bool:
         """
         Validate DataFrame schema matches expectations.
