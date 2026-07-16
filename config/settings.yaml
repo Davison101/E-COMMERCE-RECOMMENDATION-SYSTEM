@@ -1,0 +1,86 @@
+# LightGCN Recommender System Configuration
+
+# Data Configuration
+data:
+  raw_data_path: "data/raw/ml-100k/u.data"
+  processed_data_path: "data/processed"
+  dataset_name: "movielens-100k"
+  expected_columns: ["user_id", "item_id", "rating", "timestamp"]
+  rating_scale: [1, 5]
+  separator: "\t"
+  header: null
+
+# Preprocessing Configuration
+preprocessing:
+  min_interactions_per_user: 5
+  min_interactions_per_item: 5
+  remove_duplicates: true
+  handle_missing: "drop"  # options: drop, fill_mean, fill_median
+  validation_split: 0.1
+  test_split: 0.1
+  random_seed: 42
+  encoding:
+    save_mappings: true
+    mapping_path: "data/processed/mappings"
+
+# Graph Configuration
+graph:
+  self_loops: false
+  normalization: "symmetric"  # options: symmetric, random_walk
+  add_self_loops: false
+
+# Model Configuration
+model:
+  embedding_dim: 64
+  n_layers: 3
+  dropout: 0.1
+  learning_rate: 0.001
+  weight_decay: 1e-5
+  epochs: 100
+  batch_size: 2048
+  early_stopping_patience: 10
+  eval_interval: 5
+
+# Training Configuration
+training:
+  device: "auto"  # auto, cpu, cuda
+  num_workers: 4
+  pin_memory: true
+  shuffle: true
+  negative_sampling: true
+  neg_sample_ratio: 1
+
+# Evaluation Configuration
+evaluation:
+  k_values: [5, 10, 20, 50]
+  metrics: ["recall", "precision", "ndcg", "hit_ratio"]
+  save_predictions: true
+  prediction_path: "evaluation/predictions"
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: true
+
+# Database Configuration
+database:
+  type: "sqlite"
+  path: "database/recommender.db"
+  echo: false
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/recommender.log"
+  max_bytes: 10485760
+  backup_count: 5
+
+# Paths
+paths:
+  saved_models: "saved_models"
+  logs: "logs"
+  notebooks: "notebooks"
+  tests: "tests"
